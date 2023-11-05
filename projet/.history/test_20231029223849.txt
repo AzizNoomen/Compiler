@@ -1,0 +1,12 @@
+program test;
+var a,b:integer;
+Begin
+    a:=10;
+    readln(b);
+end .
+
+program test;
+var a,b:integer;
+Begin
+    a:=10;
+    readln(b);

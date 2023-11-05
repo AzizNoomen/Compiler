@@ -1,0 +1,5 @@
+program test ;
+var a , b : integer ;
+a := 5 ;
+if ( a > b ) then writeln ( a ) ;
+end .
