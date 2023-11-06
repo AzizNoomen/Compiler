@@ -117,29 +117,30 @@ int check(char ch[]){
 }
 
 int UnilexId(char ch[]) {
+    int i=0;
     printf("chaine a traiter par UnilexId %s \n", ch);
-    for (int i=0; i<sizeof(tabSymbols)/sizeof(symbole); i++){
+    while (i<sizeof(tabSymbols)/sizeof(symbole)){
         if (strcmp(ch,tabSymbols[i].att) == 0){
-            printf("attribut de symbole %s\n", tabSymbols[i].att);
-            printf("mot clé trouvé %s \n",tabSymbols[i].att);
             return tabSymbols[i].UL;
         }
+        i++;
     }
     return tabSymbols[4].UL;
 }
 
 int RangerId(char ch[],mot* tab) {
-
+    int i=0;
     int a = UnilexId(ch);
-    printf("le symbole trouvé %d \n", a);
+    printf("le symbole trouve %d \n", a);
     if (a == ID){
-        for (int i=0; i<n; i++){
+        while(i<n){
             if (strcmp(ch,(tab)[i].lexème) == 0){
-                printf("variable trouvé a la ligne %d \n",i);
+                printf("variable trouvee a la ligne %d \n",i);
                 return i;
             }
+            i++;
         }
-        printf("variable non trouvé a la ligne \n");
+        printf("variable non trouvee et ajoutee a la ligne %d\n", n);
         mot newMot;
         /*if ((sizeof(*tab)/sizeof(mot)) == n){
             printf("tableau complet\n");
@@ -150,9 +151,7 @@ int RangerId(char ch[],mot* tab) {
         //newMot.address = *(tab[n]);
         printf("newMot = %s\n", newMot.lexème);
         (tab)[n] = newMot;
-        printf("newMot dans tab = %s\n", (tab)[n].lexème);
-        printf("variable non trouvé a la ligne %d\n", n);
-        printf("\n unilexid %d \n",n);
+        printf("\n RangerID %d \n",n);
         return n++;
     }
     else{
@@ -175,7 +174,6 @@ symbole analyseur(FILE * f, mot* tab){
 
         switch(etat){
             case 0:
-                printf("case 0 %c \n", c);
                 if (c == ' ' || c == '\n' || c == '\t'){
                     i = 0;
                     etat = 0;
@@ -209,6 +207,7 @@ symbole analyseur(FILE * f, mot* tab){
                 }
 
                 else if ( c == ':' ) {
+                    printf("%c \n",c);
                     etat = 15;
                 }
 
@@ -217,6 +216,7 @@ symbole analyseur(FILE * f, mot* tab){
                     symbole.UL = PV;
                     symbole.attribute = PV;
                     etat = 0;
+                    printf("%c \n",c);
                     return symbole;
                 }
                 else if (c == ','){
@@ -224,6 +224,7 @@ symbole analyseur(FILE * f, mot* tab){
                     symbole.UL = V;
                     symbole.attribute = V;
                     etat = 0;
+                    printf("%c \n",c);
                     return symbole;
                 }
                 else if (c == '.'){
@@ -231,6 +232,7 @@ symbole analyseur(FILE * f, mot* tab){
                     symbole.UL = P;
                     symbole.attribute = P;
                     etat = 0;
+                    printf("%c \n",c);
                     return symbole;
                 }
 
@@ -239,6 +241,7 @@ symbole analyseur(FILE * f, mot* tab){
                     symbole.UL = PO;
                     symbole.attribute = PO;
                     etat = 0;
+                    printf("%c \n",c);
                     return symbole;
                 }
 
@@ -247,6 +250,7 @@ symbole analyseur(FILE * f, mot* tab){
                     symbole.UL = PF;
                     symbole.attribute = PF;
                     etat = 0;
+                    printf("%c \n",c);
                     return symbole;
                 }
 
@@ -256,7 +260,6 @@ symbole analyseur(FILE * f, mot* tab){
                 break;
 
             case 1:
-                printf("case 1 %c \n", c);
                 if (isalpha(c) || c == '0' || c=='1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c =='8' || c =='9')
                 {
                     chaine[i++] = c;
@@ -268,14 +271,12 @@ symbole analyseur(FILE * f, mot* tab){
                 break;
 
             case 2:
-                printf("case 2 %c \n", c);
                 chaine[i++] = '\0';
                 fseek(f, -1, SEEK_CUR);
                 symbole.UL = UnilexId(chaine);
                 int a = RangerId(chaine,tab);
 
                 symbole.attribute= a ;
-                printf("mot a traiter case 2 %s \n", chaine);
                 return symbole;
                 
 
@@ -296,7 +297,6 @@ symbole analyseur(FILE * f, mot* tab){
                 fseek(f, -1, SEEK_CUR);
                 symbole.UL = NB;
                 symbole.attribute = atoi(chaine);
-                printf("mot a traiter case 4 %s \n", chaine);
                 return symbole;
                 
 
@@ -312,6 +312,8 @@ symbole analyseur(FILE * f, mot* tab){
                 else{
                     etat = 8;
                 }
+                
+                printf("%c \n",c);
                 break;
 
             case 6:
@@ -319,7 +321,7 @@ symbole analyseur(FILE * f, mot* tab){
                 fseek(f, -1, SEEK_CUR);
                 symbole.UL = OPREL;
                 symbole.attribute = PPE;
-                printf("mot a traiter case 6 %s \n", chaine);
+                printf("%c \n",c);
                 return symbole;
 
 
@@ -329,7 +331,7 @@ symbole analyseur(FILE * f, mot* tab){
                 fseek(f, -1, SEEK_CUR);
                 symbole.UL = OPREL;
                 symbole.attribute = IF;
-                printf("mot a traiter case 7 %s \n", chaine);
+                printf("%c \n",c);
                 return symbole;
                 
 
@@ -339,7 +341,7 @@ symbole analyseur(FILE * f, mot* tab){
                 fseek(f, -1, SEEK_CUR);
                 symbole.UL = OPREL;
                 symbole.attribute = PPQ;
-                printf("mot a traiter case 8 %s \n", chaine);
+                printf("%c \n",c);
                 return symbole;
                 
 
@@ -349,7 +351,7 @@ symbole analyseur(FILE * f, mot* tab){
                 fseek(f, -1, SEEK_CUR);
                 symbole.UL = OPREL;
                 symbole.attribute = EGA;
-                printf("mot a traiter case 9 %s \n", chaine);
+                printf("%c \n",c);
                 return symbole;
                 
 
@@ -368,7 +370,7 @@ symbole analyseur(FILE * f, mot* tab){
                 fseek(f, -1, SEEK_CUR);
                 symbole.UL = OPREL;
                 symbole.attribute= PGE ;
-                printf("mot a traiter case 11 %s \n", chaine);
+                printf("%c \n",c);
                 return symbole;
                 
 
@@ -378,7 +380,7 @@ symbole analyseur(FILE * f, mot* tab){
                 fseek(f, -1, SEEK_CUR);
                 symbole.UL = OPREL;
                 symbole.attribute = PGQ;
-                printf("mot a traiter case 12 %s \n", chaine);
+                printf("%c \n",c);
                 return symbole;
                 
 
@@ -392,6 +394,7 @@ symbole analyseur(FILE * f, mot* tab){
                 if (c == '='){
                     symbole.UL = OPAFF;
                     symbole.attribute = OPAFF;
+                    printf("%c \n",c);
                     return symbole;
                 }
                 else if (c == ' '){
@@ -400,7 +403,7 @@ symbole analyseur(FILE * f, mot* tab){
                     return symbole;
                 }
                 else{
-                    erreur();
+                    echec();
                 }
                 etat = 0;
                 break;
@@ -686,7 +689,7 @@ int s;
 
 int main(){
 
-    FILE* f = fopen("C:/Users/azizn/Documents/3eme/Logique/projet/test.txt", "r");
+    FILE* f = fopen("../test.txt", "r");
     mot* tab = (mot*) malloc(10*sizeof(mot));
 
     /*
